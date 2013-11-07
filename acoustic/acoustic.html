@@ -70,7 +70,7 @@ function fetchAcousticPlaylist() {
     $("#all_results").hide();
     var args_using_params = { 
             'artist': artist,
-            'format':'json', 
+            'format':'jsonp', 
             'bucket': [ 'id:spotify-US', 'tracks', 'audio_summary'], 
             'limit' : true,
             'api_key': apiKey,
@@ -82,7 +82,7 @@ function fetchAcousticPlaylist() {
 
     var args_using_song_type  = { 
             'artist': artist,
-            'format':'json', 
+            'format':'jsonp', 
             'bucket': [ 'id:spotify-US', 'tracks', 'audio_summary'], 
             'limit' : true,
             'api_key': apiKey,
@@ -158,7 +158,7 @@ $(document).ready(function() {
 
     fetchApiKey( function(api_key, isLoggedIn) {
         if (!api_key) {
-            api_key = 'MY_ECHO_NEST_API_KEY';
+            api_key = 'PZ4LKPTF5EEUFUVKM';
         }
         apiKey = api_key;
         $.ajaxSetup({ cache: false });

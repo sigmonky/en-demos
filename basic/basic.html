@@ -52,24 +52,30 @@
 var embed = '<iframe src="https://embed.spotify.com/?uri=spotify:trackset:PREFEREDTITLE:TRACKS" style="width:640px; height:520px;" frameborder="0" allowtransparency="true"></iframe>';
 
 
-jQuery.ajaxSettings.traditional = true; 
-var apiKey = 'NO_API_KEY';
+//jQuery.ajaxSettings.traditional = true; 
+var apiKey = 'PZ4LKPTF5EEUFUVKM';
 
 
 function fetchBasicPlaylist(artist) {
-    var url = 'http://developer.echonest.com/api/v4/playlist/basic';
+    var url = 'http://developer.echonest.com/api/v4/playlist/basic/';
     $("#all-results").hide();
     info("Creating the playlist ...");
 
+
+
     var args = {
         'artist': artist, 
-        'api_key' : apiKey,
-        'bucket': [ 'id:spotify-WW', 'tracks'], 'limit' : true,
+        'api_key' : 'PZ4LKPTF5EEUFUVKM',
+         'bucket' : 'id:spotify-WW', 
+         'bucket':'tracks',
         'results': 12, 
-        'type':'artist-radio'
+        'type':'artist-radio',
+        'format':'json'
     };
 
-    $.getJSON(url, args,
+    url = "http://developer.echonest.com/api/v4/playlist/basic/?api_key=PZ4LKPTF5EEUFUVKM&format=json&results=30&artist=" + artist + "&bucket=id:spotify-WW&bucket=tracks&limit=true";
+
+    $.getJSON(url,
         function(data) {
             info("");
             $("#all-results").show();
