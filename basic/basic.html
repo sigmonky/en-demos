@@ -57,6 +57,7 @@ var apiKey = 'PZ4LKPTF5EEUFUVKM';
 
 
 function fetchBasicPlaylist(artist) {
+    console.log("fetching playback...");
     var url = 'http://developer.echonest.com/api/v4/playlist/basic/';
     $("#all-results").hide();
     info("Creating the playlist ...");
@@ -73,7 +74,15 @@ function fetchBasicPlaylist(artist) {
         'format':'json'
     };
 
-    url = "http://developer.echonest.com/api/v4/playlist/basic/?api_key=PZ4LKPTF5EEUFUVKM&format=json&results=30&artist=" + artist + "&bucket=id:spotify-WW&bucket=tracks&limit=true";
+    //var url = 'http://developer.echonest.com/api/v4/artist/biographies?api_key=PZ4LKPTF5EEUFUVKM&id=ARH6W4X1187B99274F&format=json&results=1&start=0&license=cc-by-sa';
+        //$.getJSON(url);
+
+    //url = "http://developer.echonest.com/api/v4/playlist/basic/?api_key=PZ4LKPTF5EEUFUVKM&format=json&results=30&artist=" + artist + "&bucket=id:spotify-WW&bucket=tracks&limit=true";
+
+    //var url = "http://developer.echonest.com/api/v4/playlist/basic?api_key=PZ4LKPTF5EEUFUVKM&artist=Weezer&format=json&results=20&type=artist-radio";
+
+    var url = "http://developer.echonest.com/api/v4/playlist/basic?api_key=PZ4LKPTF5EEUFUVKM&format=json&results=30&artist=charlie+patton&bucket=id:spotify-WW&bucket=tracks&limit=true";
+    console.log(url);
 
     $.getJSON(url,
         function(data) {
@@ -83,21 +92,21 @@ function fetchBasicPlaylist(artist) {
             if (! ('songs' in data.response)) {
                 error("Can't find that artist");
             } else {
+
                 var tracks = "";
                 for (var i = 0; i < data.response.songs.length; i++) {
                     var song = data.response.songs[i];
+                    console.log(song);
                     var tid = song.tracks[0].foreign_id.replace('spotify-WW:track:', '');
                     tracks = tracks + tid + ',';
+                    //var title = song.title;
+                    //tracks = tracks + title + ",";
                 }
                     var tembed = embed.replace('TRACKS', tracks);
-                    tembed = tembed.replace('PREFEREDTITLE', artist + ' playlist');
+                    tembed = tembed.replace('PREFEREDTITLE', ' test playlist');
                     $("#results").html(tembed);
                     $("#all-results").show();
                 }
-            },
-
-            function() {
-                error("Trouble getting blog posts for " + artist);
             }
         );
 }
@@ -134,15 +143,19 @@ function error(s) {
 $(document).ready(function() {
     // fetchApiKey will fetch the Echo Nest demo key for demos
     // hosted on The Echo Nest, otherwise it fetch an empty key
-    fetchApiKey( function(api_key, isLoggedIn) {
+    /*fetchApiKeyV1( function(api_key, isLoggedIn) {
         if (!api_key) {
-            api_key = 'MY_ECHO_NEST_API_KEY';
+            api_key = 'PZ4LKPTF5EEUFUVKM';
         }
         apiKey = api_key;
         $("#all-results").hide();
         $("#go").click(go);
         $("#artist").change(go);
-    });
+    });*/
+    $("#all-results").hide();
+    $("#go").click(go);
+    $("#artist").change(go);
+    
 });
 
 </script>

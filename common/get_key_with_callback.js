@@ -3,7 +3,7 @@
 // the demo key (which has a very low rate limit)
 
 function fetchApiKeyV1(callback) {
-    $.getJSON('http://developer.echonest.com/user/api_key.json', function(data) {
+    $.getJSON('http://developer.echonest.com/user/api_key.json?format=jsonp', function(data) {
         var apiKey = data.api_key;
         var isLoggedIn = 'logged_in' in data && data.logged_in;
         if (callback) {
