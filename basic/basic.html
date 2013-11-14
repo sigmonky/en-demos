@@ -2,6 +2,7 @@
 <html>
   <head>
     <title>Basic Playlisting Demo</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
     <link href="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.1/css/bootstrap-combined.min.css" rel="stylesheet">
     <script src="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.1/js/bootstrap.min.js"></script>
@@ -10,28 +11,9 @@
   </head>
 
 <body>
-
-<div id="wrap" class="navbar navbar-inverse">
-  <div class="navbar-inner">
-    <div class="container">
-        <a id='show-search' class="brand">Basic Playlisting</a>
-        <ul class="nav">
-          <li class="nav-choice active"><a id='show-main'>Main</a></li>
-          <li class="nav-choice"><a href="https://github.com/plamere/en-demos/blob/master/basic/basic.html">The Source</a></li>
-          <li class="nav-choice"><a href="http://developer.echonest.com/docs/v4/playlist.html#basic">Basic Playlisting API</a></li>
-        </ul>
-        <ul class="nav pull-right">
-          <li class="nav-choice"><a href="http://static.echonest.com/labs">Labs</a></li>
-          <li class="nav-choice"><a href="http://static.echonest.com/labs/demo.html">Demos</a></li>
-          <li class="nav-choice"><a href="http://developer.echonest.com">developer.echonest.com</a></li>
-        </ul>
-    </div>
-  </div>
-</div>
-
 <div class="container">
     <div class="hero-unit span8">
-        <h1> Basic Playlisting</h1>
+        <h3> Basic Playlisting</h3>
         <p> A demonstration of how to use The Echo Nest Basic Playlisting API to create a Spotify playlist.  </p>
         <div>
             <input id="artist" type="text" placeholder="Enter artist name ..." </input>
@@ -39,17 +21,18 @@
         </div>
         <div id="info" class=""> </div>
     </div>
+    <div id="results"> </div>
 
     <div id="all-results" class="container">
         <div class="hero-unit span8">
-            <div id="results"> </div>
+            
         </div>
     </div>
 
 </div>
 <script type="text/javascript">
 
-var embed = '<iframe src="https://embed.spotify.com/?uri=spotify:trackset:PREFEREDTITLE:TRACKS" style="width:640px; height:520px;" frameborder="0" allowtransparency="true"></iframe>';
+var embed = '<iframe src="https://embed.spotify.com/?uri=spotify:trackset:PREFEREDTITLE:TRACKS" style="width:320px; height:320px;" frameborder="0" allowtransparency="true"></iframe>';
 
 
 //jQuery.ajaxSettings.traditional = true; 
@@ -64,15 +47,7 @@ function fetchBasicPlaylist(artist) {
 
 
 
-    var args = {
-        'artist': artist, 
-        'api_key' : 'PZ4LKPTF5EEUFUVKM',
-         'bucket' : 'id:spotify-WW', 
-         'bucket':'tracks',
-        'results': 12, 
-        'type':'artist-radio',
-        'format':'json'
-    };
+    
 
     //var url = 'http://developer.echonest.com/api/v4/artist/biographies?api_key=PZ4LKPTF5EEUFUVKM&id=ARH6W4X1187B99274F&format=json&results=1&start=0&license=cc-by-sa';
         //$.getJSON(url);
@@ -81,34 +56,77 @@ function fetchBasicPlaylist(artist) {
 
     //var url = "http://developer.echonest.com/api/v4/playlist/basic?api_key=PZ4LKPTF5EEUFUVKM&artist=Weezer&format=json&results=20&type=artist-radio";
 
-    var url = "http://developer.echonest.com/api/v4/playlist/basic?api_key=PZ4LKPTF5EEUFUVKM&format=json&results=30&artist=charlie+patton&bucket=id:spotify-WW&bucket=tracks&limit=true";
+    
+
+    var requestParams = {};
+    var queryParams = {};
+
+    requestParams.baseURL = "http://developer.echonest.com/api/v4";
+    requestParams.serviceType = "playlist";
+    requestParams.service = "basic";
+
+    queryParams.api_key = "PZ4LKPTF5EEUFUVKM";
+    queryParams.format = "json";
+    queryParams.results = "30";
+    queryParams.artist = artist;
+    queryParams.bucket = ["id:spotify-WW","tracks"];
+    //queryParams.bucket = ;
+    queryParams.limit = "true";
+
+
+    //var url = "http://developer.echonest.com/api/v4/playlist/basic?api_key=PZ4LKPTF5EEUFUVKM&format=json&results=30&artist=charlie patton&bucket=id:spotify-WW&bucket=tracks&limit=true";
+
+    var url = requestParams.baseURL 
+            + "/" 
+            + requestParams.serviceType 
+            + "/" 
+            + requestParams.service;
+            /*
+            + "?api_key=" + queryParams.api_key
+            + "&format=" + queryParams.format
+            + "&results=" + queryParams.resultCnt
+            + "&artist=" + queryParams.artist
+            + "&bucket=" + queryParams.bucket[0] 
+            + "&bucket=" + queryParams.bucket[1]
+            + "&limit=" +  queryParams.limit;
+            */
+
+    
+
+
     console.log(url);
 
-    $.getJSON(url,
-        function(data) {
-            info("");
-            $("#all-results").show();
-            $("#results").empty();
-            if (! ('songs' in data.response)) {
-                error("Can't find that artist");
-            } else {
-
-                var tracks = "";
-                for (var i = 0; i < data.response.songs.length; i++) {
-                    var song = data.response.songs[i];
-                    console.log(song);
-                    var tid = song.tracks[0].foreign_id.replace('spotify-WW:track:', '');
-                    tracks = tracks + tid + ',';
-                    //var title = song.title;
-                    //tracks = tracks + title + ",";
-                }
-                    var tembed = embed.replace('TRACKS', tracks);
-                    tembed = tembed.replace('PREFEREDTITLE', ' test playlist');
-                    $("#results").html(tembed);
+    $.ajax({
+            url:url,
+            data:$.param(queryParams,true),
+            success:
+                function(data) {
+                    info("");
                     $("#all-results").show();
+                    $("#results").empty();
+                    if (! ('songs' in data.response)) {
+                        error("Can't find that artist");
+                    } else {
+
+                        var tracks = "";
+                        for (var i = 0; i < data.response.songs.length; i++) {
+                            var song = data.response.songs[i];
+                            console.log(song);
+                            var tid = song.tracks[0].foreign_id.replace('spotify-WW:track:', '');
+                            console.log(tid);
+                            tracks = tracks + tid + ',';
+                            //var title = song.title;
+                            //tracks = tracks + title + ",";
+                        }
+
+                        var tembed = embed.replace('TRACKS', tracks);
+                        tembed = tembed.replace('PREFEREDTITLE', ' test playlist');
+                        $("#results").html(tembed);
+                        $("#all-results").show();
+ 
+                    }
                 }
-            }
-        );
+        });
 }
 
 
